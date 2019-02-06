@@ -1,4 +1,4 @@
-Clip(Text="") ; http://www.autohotkey.com/forum/viewtopic.php?p=467710 , modified February 19, 2013
+Clip(Text="", ReSelect=False) ; http://www.autohotkey.com/forum/viewtopic.php?p=467710 , modified February 19, 2013
 {
 	Static BackUpClip, Stored, LastClip
 	If (A_ThisLabel = A_ThisFunc) {
@@ -24,6 +24,8 @@ Clip(Text="") ; http://www.autohotkey.com/forum/viewtopic.php?p=467710 , modifie
 		Sleep 20 ; Short sleep in case Clip() is followed by more keystrokes such as {Enter}
 		If (Text = "")
 			Return LastClip := Clipboard
+		Else If ReSelect and ((ReSelect = True) or (StrLen(Text) < 3000))
+			SendInput, % "{Shift Down}{Left " StrLen(StrReplace(Text, "`r")) "}{Shift Up}"
 	}
 	Return
 	Clip:
