@@ -1,24 +1,18 @@
-﻿ ;Clip() - Send and Retrieve Text Using the Clipboard
- ;by berban - updated February 18, 2019
- ;https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62156
+; Clip() - Send and Retrieve Text Using the Clipboard
+; by berban - updated February 18, 2019
+; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62156
 
- ;adapted by Gewerd Strauss
+; adapted by Gewerd Strauss
 
 fClip(Text="", Reselect="",Restore:=1)
 {
-	BlockInput,On
 	ClipStore:=Clipboard
 	if RegExMatch(Text,"[&|]") ; check if needle contains cursor-pos. 
 	{
 		move := StrLen(Text) - RegExMatch(Text, "[&|]")
 		Text := RegExReplace(Text, "[&|]")
 		sleep, 20
-		MoveCursor:=true
-	}
-	Else
-	{
-		MoveCursor:=false
-		move:=1 		; offset the left-moves for the edgecase that this is not guarded by movecursor
+		MoveCursor=true
 	}
 	Static BackUpClip, Stored, LastClip
 	If (A_ThisLabel = A_ThisFunc)
@@ -49,16 +43,16 @@ fClip(Text="", Reselect="",Restore:=1)
 			SendInput, ^v
 			if MoveCursor
 			{
-				if WinActive("E-Mail – Claudius-Simon.Appel@hsrw.org")
+				if WinActive("E-Mail - - Google Chrome") ; removed identifiying information. 
 				{
 					WinActivate
 					sleep, 20
-					BlockInput,On
-					WinActivate, "E-Mail – Claudius-Simon.Appel@hsrw.org"
+					WinActivate, "E-Mail - - Google Chrome"
 					if !ReSelect and (ReSelect = False)
 						SendInput, % "{Left " move-1 "}"
 					else if (Reselect="")
 						SendInput, % "{Left " move-1 "}"
+					
 				}	
 				else
 					if !ReSelect and (ReSelect = False)
@@ -69,21 +63,18 @@ fClip(Text="", Reselect="",Restore:=1)
 		}
 		SetTimer, %A_ThisFunc%, -700
 		Sleep 20 ; Short sleep in case Clip() is followed by more keystrokes such as {Enter}
-		If (Text = "") ; we are pulling, not pasting
+		If (Text = "") ; we are pulling text rn, not pasting
 		{
 			SetTimer, %A_ThisFunc%, Off
 			{
 				f_unstickKeys()
 				if !Restore
-				{
-					BlockInput, Off
 					return LastClip := Clipboard
-				}
+				else	
 				LastClip := Clipboard
 				Clipboard:=""
 				ClipWait, LongCopy ? 0.6 : 0.2, True
 				Clipboard:=ClipStore
-				BlockInput,Off
 				Return LastClip
 			}
 		}
@@ -94,62 +85,16 @@ fClip(Text="", Reselect="",Restore:=1)
 		}
 	}
 	f_unstickKeys()  
-	BlockInput, Off
 	Return
 	fClip:
 	f_unstickKeys()
-	BlockInput,Off
 	Return fClip()
 }
 
-
 f_unstickKeys()
 {
-	BlockInput,On
 	SendInput, {Ctrl Up}
 	SendInput, {V Up}
 	SendInput, {Shift Up}
 	SendInput, {Alt Up}
-	BlockInput,Off
 }
-
-
-/* original by berban https://github.com/berban/Clip/blob/master/Clip.ahk
-	; Clip() - Send and Retrieve Text Using the Clipboard
-; by berban - updated February 18, 2019
-; https://www.autohotkey.com/boards/viewtopic.php?f=6&t=62156
-Clip(Text="", Reselect="")
-{
-	Static BackUpClip, Stored, LastClip
-	If (A_ThisLabel = A_ThisFunc) {
-		If (Clipboard == LastClip)
-			Clipboard := BackUpClip
-		BackUpClip := LastClip := Stored := ""
-	} Else {
-		If !Stored {
-			Stored := True
-			BackUpClip := ClipboardAll ; ClipboardAll must be on its own line
-		} Else
-			SetTimer, %A_ThisFunc%, Off
-		LongCopy := A_TickCount, Clipboard := "", LongCopy -= A_TickCount ; LongCopy gauges the amount of time it takes to empty the clipboard which can predict how long the subsequent clipwait will need
-		If (Text = "") {
-			SendInput, ^c
-			ClipWait, LongCopy ? 0.6 : 0.2, True
-		} Else {
-			Clipboard := LastClip := Text
-			ClipWait, 10
-			SendInput, ^v
-		}
-		SetTimer, %A_ThisFunc%, -700
-		Sleep 20 ; Short sleep in case Clip() is followed by more keystrokes such as {Enter}
-		If (Text = "")
-			Return LastClip := Clipboard
-		Else If ReSelect and ((ReSelect = True) or (StrLen(Text) < 3000))
-			SendInput, % "{Shift Down}{Left " StrLen(StrReplace(Text, "`r")) "}{Shift Up}"
-	}
-	Return
-	Clip:
-	Return Clip()
-}
-*/
-
