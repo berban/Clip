@@ -6,7 +6,6 @@
 
 fClip(Text="", Reselect="",Restore:=1,DefaultMethod:=1)
 {
-	;m(DefaultMethod)
 	if !DefaultMethod
 	{
 		BlockInput,On
@@ -49,7 +48,6 @@ fClip(Text="", Reselect="",Restore:=1,DefaultMethod:=1)
 				Clipboard := LastClip := Text
 				ClipWait, 10
 				SendInput, ^v
-			;MsgBox, mc:%MoveCursor%
 				if MoveCursor
 				{
 					if WinActive("E-Mail – ") and Winactive("— Mozilla Firefox")
