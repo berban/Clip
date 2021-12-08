@@ -6,6 +6,13 @@
 
 fClip(Text="", Reselect="",Restore:=1,DefaultMethod:=1)
 {
+	/*
+	Parameters
+	Text: variable whose contents to paste. 
+	Reselect: set true if you want to reselect pasted text for further processing
+	Restore: restore clipboard after using it. 
+	DefaultMethod: keep true to use the original method. Recommended for anyone but Gewerd S./me, as I needed some extremely minute modifications in some places and expanded the whole function to be more readable for me. 
+	*/
 	if !DefaultMethod
 	{
 		BlockInput,On
